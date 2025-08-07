@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ademide Calc</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #121212;
+      color: white;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    #calculator {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+    }
+
+    #display {
+      background: #000;
+      color: #0f0;
+      font-size: 2em;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: right;
+      margin-bottom: 10px;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 1.2em;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    #history {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #aaa;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    #voiceBtn {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      background: #2196F3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Ademide Calc</h2>
+  <div id="calculator">
+    <div id="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="append('%')">%</button>
+      <button onclick="append('(')">(</button>
+      <button onclick="append(')')">)</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('÷')">÷</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('×')">×</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('−')">−</button>
+
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="append('+')">+</button>
+    </div>
+    <button id="voiceBtn" onclick="startVoiceInput()">🎤 Voice Input</button>
+    <div id="history"></div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+    const history = document.getElementById("history");
+
+    function append(char) {
+      if (display.textContent === "0" || display.textContent === "Error") {
+        display.textContent = char;
+      } else {
+        display.textContent += char;
+      }
+    }
+
+    function clearDisplay() {
+      display.textContent = "0";
+    }
+
+    function calculate() {
+      try {
+        let expression = display.textContent
+          .replace(/×/g, '*')
+          .replace(/÷/g, '/')
+          .replace(/−/g, '-');
+
+        const result = eval(expression);
+        history.innerHTML += `<div>${display.textContent} = ${result}</div>`;
+        display.textContent = result;
+      } catch (e) {
+        display.textContent = "Error";
+      }
+    }
+
+    function startVoiceInput() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Voice recognition not supported");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.onresult = function(event) {
+        const spoken = event.results[0][0].transcript;
+        display.textContent = spoken;
+        calculate();
+      };
+      recognition.onerror = function() {
+        alert("Voice input error");
+      };
+      recognition.start();
+    }
+  </script>
+</body>
+</html>
