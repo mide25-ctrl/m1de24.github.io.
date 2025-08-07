@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ademide Food Co</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .menu {
+      padding: 20px;
+    }
+    .item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .form-inputs {
+      margin: 10px 0;
+    }
+    input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Ademide Food Co</h1>
+    <p>Affordable and delicious local Nigerian dishes</p>
+  </header>
+
+  <main>
+    <section class="menu">
+      <h2>Order Now</h2>
+
+      <div class="form-inputs">
+        <input type="text" id="customerName" placeholder="Your Name" required>
+        <input type="email" id="customerEmail" placeholder="Your Email" required>
+      </div>
+
+      <div class="item">
+        <h3>Jollof Rice</h3>
+        <p>₦300</p>
+        <button onclick="pay('Jollof Rice', 30000)">Order</button>
+      </div>
+
+      <div class="item">
+        <h3>Amala & Ewedu</h3>
+        <p>₦250</p>
+        <button onclick="pay('Amala & Ewedu', 25000)">Order</button>
+      </div>
+
+      <div class="item">
+        <h3>Pounded Yam & Egusi</h3>
+        <p>₦300</p>
+        <button onclick="pay('Pounded Yam & Egusi', 30000)">Order</button>
+      </div>
+
+      <div class="item">
+        <h3>Moi Moi</h3>
+        <p>₦150</p>
+        <button onclick="pay('Moi Moi', 15000)">Order</button>
+      </div>
+
+      <div class="item">
+        <h3>Beans & Plantain</h3>
+        <p>₦200</p>
+        <button onclick="pay('Beans & Plantain', 20000)">Order</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Ademide Food Co. All rights reserved.</p>
+  </footer>
+
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+    function pay(itemName, amount) {
+      const name = document.getElementById('customerName').value;
+      const email = document.getElementById('customerEmail').value;
+
+      if (!name || !email) {
+        alert("Please enter your name and email before ordering.");
+        return;
+      }
+
+      var handler = PaystackPop.setup({
+        key: 'pk_live_REPLACE_WITH_YOUR_LIVE_KEY', // Replace with your real live key from Paystack
+        email: email,
+        amount: amount,
+        currency: 'NGN',
+        ref: '' + Math.floor((Math.random() * 1000000000) + 1),
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Customer Name",
+              variable_name: "customer_name",
+              value: name
+            },
+            {
+              display_name: "Food Item",
+              variable_name: "food_item",
+              value: itemName
+            }
+          ]
+        },
+        callback: function(response){
+          alert('Payment successful! Reference: ' + response.reference);
+        },
+        onClose: function(){
+          alert('Transaction cancelled.');
+        }
+      });
+
+      handler.openIframe();
+    }
+  </script>
+</body>
+</html>
